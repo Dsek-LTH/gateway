@@ -1,0 +1,22 @@
+{
+  "name": "dsek-core",
+  "version": "0.0.1",
+  "description": "",
+  "main": "build/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "tslint --project . && tsc && npm start",
+    "start": "node build/main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^9.3.0",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.6.0",
+    "typescript": "^2.6.2"
+  },
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
