@@ -4,7 +4,7 @@ export class Proxy {
   private server: express.Express;
 
   constructor() {
-    console.log("proski started");
+    console.log("proxy started");
     this.server = express();
 
     this.server.get("/:service", this.query.bind(this));
@@ -12,7 +12,7 @@ export class Proxy {
   }
 
   private query(req: express.Request, res: express.Response) {
-    const service = req.params.service;
-    res.end(`hello world from ${service}!`);
+    const service: string = req.params.service;
+    res.end(`Hey world from ${service.toUpperCase()}!`);
   }
 }
