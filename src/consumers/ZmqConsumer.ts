@@ -1,6 +1,6 @@
 import * as zmq from "zeromq";
 
-import { IConsumer } from "./IConsumer";
+import { Status, IConsumer } from "./IConsumer";
 
 export class ZmqConsumer implements IConsumer {
   public onRequest: (service: string, route: Buffer[], query: Buffer) => void;
@@ -15,8 +15,8 @@ export class ZmqConsumer implements IConsumer {
     this.socket.bindSync(bind);
   }
 
-  public respond(route: Buffer[], response: Buffer) {
-    const data = route.concat([new Buffer(""), response]);
+  public respond(route: Buffer[], status: Status, response?: Buffer) {
+    const data = route.concat([new Buffer(""), new Buffer(status, "utf-8"), response]);
     this.socket.send(data);
   }
 
