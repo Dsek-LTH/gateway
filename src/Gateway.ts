@@ -50,6 +50,6 @@ export class Gateway {
       return;
     }
 
-    service.query([new Buffer(consumerName, "utf-8")].concat(route), query);
+    service.request([new Buffer(consumerName, "utf-8")].concat(route), query);
   }
 }
