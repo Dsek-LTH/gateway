@@ -1,4 +1,4 @@
 export interface IService {
-  onResponse: (...parts: Buffer[]) => void;
+  onResponse: (route: Buffer[], response: Buffer) => void;
   query(route: Buffer[], query: Buffer): void;
 }

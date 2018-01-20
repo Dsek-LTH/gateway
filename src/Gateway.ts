@@ -29,8 +29,20 @@ export class Gateway {
     consumer.onRequest = this.onRequest.bind(this, name);
   }
 
-  private onResponse(...parts: Buffer[]): void {
-    console.log("response received: ", parts);
+  private onResponse(route: Buffer[], response: Buffer): void {
+    const consumerName = route[0].toString("utf-8");
+    route = route.slice(1)
+
+    console.log(`response received: ${consumerName} -> ${route}: ${response}`);
+    
+    const consumer = this.consumers[consumerName];
+
+    if (!consumer) {
+      console.warn("bad consumer: ", consumerName);
+      return;
+    }
+
+    consumer.respond(route, response);
   }
 
   private onRequest(consumerName: string, serviceName: string, route: Buffer[], query: Buffer): void {
@@ -43,7 +55,7 @@ export class Gateway {
       return;
     }
 
-    service.query([new Buffer("http", "utf-8")].concat(route), query);
+    service.query([new Buffer(consumerName, "utf-8")].concat(route), query);
   }
 
   private async query(req: express.Request, res: express.Response): Promise<void> {

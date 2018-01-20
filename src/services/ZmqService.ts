@@ -3,7 +3,7 @@ import * as zmq from "zeromq";
 import { IService } from "./IService";
 
 export class ZmqService implements IService {
-  public onResponse: (...parts: Buffer[]) => void;
+  public onResponse: (route: Buffer[], response: Buffer) => void;
 
   private socket: zmq.Socket;
 
@@ -13,15 +13,19 @@ export class ZmqService implements IService {
 
     this.socket.on("message", (...parts: Buffer[]) => {
       console.log("received response: ", parts);
+
       if (this.onResponse) {
-        this.onResponse(...parts);
+        const delimiter = parts.findIndex((x) => x.length == 0);
+        const route = parts.slice(0, delimiter);
+        const response = parts[delimiter+1];
+        this.onResponse(route, response);
       }
     });
   }
 
   public query(route: Buffer[], query: Buffer): void {
-    const data = route.concat([Buffer.from([]), query]);
+    const data = [].concat(route).concat([Buffer.from([]), query]);
     console.log("dispatching query: ", data);
-    this.socket.send(query);
+    this.socket.send(data);
   }
 }
