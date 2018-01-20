@@ -27,7 +27,7 @@ def request(context, args):
 
     socket.send_multipart([service.encode("utf-8"), data.encode("utf-8")])
     frames = socket.recv_multipart(0)
-    print("response: <%s>"%(frames[0].decode("utf-8")))
+    print("response %s: <%s>"%(frames[0].decode("utf-8"), frames[1].decode("utf-8")))
 
 def gateway(context, args):
     frontend_endpoint = args.frontend
