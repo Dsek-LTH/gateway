@@ -15,9 +15,9 @@ export class ZmqService implements IService {
       console.log("received response: ", parts);
 
       if (this.onResponse) {
-        const delimiter = parts.findIndex((x) => x.length == 0);
+        const delimiter = parts.findIndex((x) => x.length === 0);
         const route = parts.slice(0, delimiter);
-        const response = parts[delimiter+1];
+        const response = parts[delimiter + 1];
         this.onResponse(route, response);
       }
     });
