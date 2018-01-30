@@ -8,7 +8,8 @@
     "bulid": "tslint --project . && tsc && npm start",
     "dev": "tsc && npm start",
     "start": "node build/main.js",
-    "watch": "nodemon -e ts -w src --exec 'npm run dev'"
+    "watch": "nodemon -e ts -w src --exec 'npm run dev'",
+    "install": "tsc"
   },
   "author": "",
   "license": "ISC",
