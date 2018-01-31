@@ -1,5 +1,5 @@
 {
-  "name": "dsek-core",
+  "name": "dsek-gateway",
   "version": "0.0.1",
   "description": "",
   "main": "build/main.js",
