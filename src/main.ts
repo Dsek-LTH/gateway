@@ -12,4 +12,4 @@ const gateway = new Gateway();
 gateway.registerService("login", new ZmqService(1338));
 
 gateway.registerConsumer("zmq", new ZmqConsumer("tcp://*:6000"));
-gateway.registerConsumer("http", new HttpConsumer(8080));
+gateway.registerConsumer("http", new HttpConsumer(8081));
