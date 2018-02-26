@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "bulid": "tslint --project . && tsc && npm start",
+    "build": "tslint --project . && tsc",
     "dev": "tsc && npm start",
     "start": "node build/main.js",
     "watch": "nodemon -e ts -w src --exec 'npm run dev'",
