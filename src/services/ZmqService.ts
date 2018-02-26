@@ -23,8 +23,8 @@ export class ZmqService implements IService {
     });
   }
 
-  public request(route: Buffer[], query: Buffer): void {
-    const data = [].concat(route).concat([Buffer.from([]), query]);
+  public request(route: Buffer[], operation: any): void {
+    const data = [].concat(route).concat([Buffer.from([]), new Buffer(operation, "utf-8")]);
     console.log("dispatching query: ", data);
     this.socket.send(data);
   }

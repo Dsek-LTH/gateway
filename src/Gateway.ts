@@ -40,8 +40,8 @@ export class Gateway {
     consumer.respond(route, Status.Ok, response);
   }
 
-  private onRequest(consumer: IConsumer, consumerName: string, serviceName: string, route: Buffer[], query: Buffer): void {
-    console.log(`request received over ${consumerName}: ${route} -> ${serviceName}: ${query}`);
+  private onRequest(consumer: IConsumer, consumerName: string, serviceName: string, route: Buffer[], operation: any): void {
+    console.log(`request received over ${consumerName}: ${route} -> ${serviceName}: ${operation}`);
     const service = this.services[serviceName];
 
     if (!service) {
@@ -50,6 +50,6 @@ export class Gateway {
       return;
     }
 
-    service.request([new Buffer(consumerName, "utf-8")].concat(route), query);
+    service.request([new Buffer(consumerName, "utf-8")].concat(route), operation);
   }
 }

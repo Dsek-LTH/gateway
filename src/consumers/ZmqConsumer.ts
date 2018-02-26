@@ -3,7 +3,7 @@ import * as zmq from "zeromq";
 import { Status, IConsumer } from "./IConsumer";
 
 export class ZmqConsumer implements IConsumer {
-  public onRequest: (service: string, route: Buffer[], query: Buffer) => void;
+  public onRequest: (service: string, route: Buffer[], operation: any) => void;
 
   private socket: zmq.Socket;
 
@@ -32,6 +32,6 @@ export class ZmqConsumer implements IConsumer {
     }
 
     const [serviceName, request] = content;
-    this.onRequest(serviceName.toString("utf-8"), envelope, request);
+    this.onRequest(serviceName.toString("utf-8"), envelope, JSON.parse(request.toString("utf-8")));
   }
 }

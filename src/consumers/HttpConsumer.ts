@@ -53,8 +53,12 @@ export class HttpConsumer implements IConsumer {
 
   private createFetcher(service: string): (operation: any) => Promise<ExecutionResult> {
     return async (operation: { query: string, variables: any }) => {
-      console.log("variables", operation.variables);
-      return JSON.parse((await this.execute(service, new Buffer(operation.query, "utf-8"))).toString("utf-8"));
+      console.log("variables", operation);
+      const op = {
+        variables: operation.variables,
+        query: operation.query,
+      };
+      return JSON.parse((await this.execute(service, new Buffer(JSON.stringify(op), "utf-8"))).toString("utf-8"));
     }
   }
 
@@ -118,14 +122,14 @@ export class HttpConsumer implements IConsumer {
 
   private async request(req: express.Request, res: express.Response) {
     const service = req.params.service;
-    const query = req.body as Buffer;
+    const operation = (req.body as Buffer).toString("utf-8");
 
     // Allocate a unique ID for the request, and save a promise with that ID
     // to be resolved by the response
-    console.log(`http query @${service}: <${query}>`);
+    console.log(`http query @${service}: <${operation}>`);
 
     try {
-      const response = await this.execute(service, query);
+      const response = await this.execute(service, operation);
       console.log(`http query response: <${response}>`);
       res.send(response.toString("utf-8"));
     } catch (e) {
@@ -139,7 +143,7 @@ export class HttpConsumer implements IConsumer {
     }
   }
 
-  private async execute(service: string, query: Buffer): Promise<Buffer> {
+  private async execute(service: string, operation: any): Promise<Buffer> {
     const id = uuid.v4();
 
     const requestPromise = new Promise<Buffer>((resolve, reject) => {
@@ -153,7 +157,7 @@ export class HttpConsumer implements IConsumer {
     // Initiate request
     if (this.onRequest) {
       const route = [new Buffer(id, "utf-8")];
-      this.onRequest(service, route, query);
+      this.onRequest(service, route, operation);
     }
 
     try {

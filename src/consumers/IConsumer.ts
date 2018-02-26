@@ -5,6 +5,6 @@ export enum Status {
 }
 
 export interface IConsumer {
-  onRequest: (service: string, route: Buffer[], query: Buffer) => void;
+  onRequest: (service: string, route: Buffer[], operation: any) => void;
   respond(route: Buffer[], status: Status, response?: Buffer): void;
 }
