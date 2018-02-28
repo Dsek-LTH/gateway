@@ -79,32 +79,18 @@ export class HttpConsumer implements IConsumer {
     const schemas: any[] = (await Promise.all(services.map(s => this.getSchema(s)))).filter(x => x != null);
     schemas.push(`
       extend type Message {
-        user: User
+        author: User
       }
     `);
 
     return mergeSchemas({
-      /*
-      links: [
-        {
-          name: "user",
-          from: "Message",
-          to: "user",
-          resolveArgs: (parent: any) => ({id: parent.author}),
-          fragment: `
-            fragment AuthorUser on Message {
-              author
-            }
-          `,
-        },
-      ],*/
       resolvers: (mergeInfo) => ({
         Message: {
-          user: {
-            fragment: `fragment MessageFragment on Message { author }`,
+          author: {
+            fragment: `fragment MessageFragment on Message { authorId }`,
             resolve(parent: any, args: any, context: any, info: any) {
               console.log(parent, args);
-              const id: string = parent.author;
+              const id: string = parent.authorId;
               return mergeInfo.delegate(
                 "query",
                 "user",
