@@ -1,14 +1,13 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as expressGraphQL from "express-graphql";
-import { graphql, Source, buildSchema, GraphQLSchema, ExecutionResult } from "graphql";
+import { buildSchema, ExecutionResult, graphql, GraphQLSchema, Source } from "graphql";
 import { introspectSchema, makeRemoteExecutableSchema, mergeSchemas } from "graphql-tools";
 import * as uuid from "uuid";
 
-import { Status, IConsumer } from "./IConsumer";
+import { IConsumer, Status } from "./IConsumer";
 
-
-interface PendingRequest {
+interface IPendingRequest {
   resolve: (response: Buffer) => void;
   reject: (error: Status) => void;
 }
@@ -17,7 +16,7 @@ export class HttpConsumer implements IConsumer {
   public onRequest: (service: string, route: Buffer[], query: Buffer) => void;
 
   private server: express.Application;
-  private pending: { [id: string]: PendingRequest } = {};
+  private pending: { [id: string]: IPendingRequest } = {};
   private schema: GraphQLSchema;
 
   constructor(port: number) {
@@ -26,7 +25,7 @@ export class HttpConsumer implements IConsumer {
       type: "*/*",
     })).post("/:service", this.request.bind(this));
 
-    //this.server.post("/", this.query.bind(this));
+    // this.server.post("/", this.query.bind(this));
     this.server.listen(port, () => console.log(`http consumer listening on port ${port}`));
 
     setTimeout(async () => {
@@ -44,8 +43,7 @@ export class HttpConsumer implements IConsumer {
     if (pending) {
       if (status === Status.Ok) {
         pending.resolve(response);
-      }
-      else {
+      } else {
         pending.reject(status);
       }
     }
@@ -55,11 +53,11 @@ export class HttpConsumer implements IConsumer {
     return async (operation: { query: string, variables: any }) => {
       console.log("variables", operation);
       const op = {
-        variables: operation.variables,
         query: operation.query,
+        variables: operation.variables,
       };
       return JSON.parse((await this.execute(service, new Buffer(JSON.stringify(op), "utf-8"))).toString("utf-8"));
-    }
+    };
   }
 
   private async getSchema(service: string): Promise<GraphQLSchema> {
@@ -76,7 +74,7 @@ export class HttpConsumer implements IConsumer {
   }
 
   private async stitchSchema(services: string[]): Promise<GraphQLSchema> {
-    const schemas: any[] = (await Promise.all(services.map(s => this.getSchema(s)))).filter(x => x != null);
+    const schemas: any[] = (await Promise.all(services.map((s) => this.getSchema(s)))).filter((x) => x != null);
     schemas.push(`
       extend type Message {
         author: User
@@ -158,4 +156,3 @@ export class HttpConsumer implements IConsumer {
     const query = (req.body as Buffer).toString("utf-8");
   }
 }
-

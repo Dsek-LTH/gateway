@@ -1,6 +1,6 @@
 import * as zmq from "zeromq";
 
-import { Status, IConsumer } from "./IConsumer";
+import { IConsumer, Status } from "./IConsumer";
 
 export class ZmqConsumer implements IConsumer {
   public onRequest: (service: string, route: Buffer[], operation: any) => void;

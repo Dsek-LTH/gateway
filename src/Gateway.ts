@@ -26,10 +26,10 @@ export class Gateway {
 
   private onResponse(route: Buffer[], response: Buffer): void {
     const consumerName = route[0].toString("utf-8");
-    route = route.slice(1)
+    route = route.slice(1);
 
     console.log(`response received: ${consumerName} -> ${route}: ${response}`);
-    
+
     const consumer = this.consumers[consumerName];
 
     if (!consumer) {
@@ -40,7 +40,8 @@ export class Gateway {
     consumer.respond(route, Status.Ok, response);
   }
 
-  private onRequest(consumer: IConsumer, consumerName: string, serviceName: string, route: Buffer[], operation: any): void {
+  private onRequest(consumer: IConsumer, consumerName: string,
+                    serviceName: string, route: Buffer[], operation: any): void {
     console.log(`request received over ${consumerName}: ${route} -> ${serviceName}: ${operation}`);
     const service = this.services[serviceName];
 

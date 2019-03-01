@@ -22,7 +22,7 @@
     "@types/uuid": "^3.4.3",
     "@types/zeromq": "^4.5.3",
     "nodemon": "^1.14.11",
-    "source-map-support": "^0.5.1",
+    "source-map-support": "^0.5.10",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
     "typescript": "^2.6.2"
