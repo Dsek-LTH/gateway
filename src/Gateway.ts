@@ -29,7 +29,6 @@ export class Gateway {
     route = route.slice(1);
 
     console.log(`response received: ${consumerName} -> ${route}: ${response}`);
-
     const consumer = this.consumers[consumerName];
 
     if (!consumer) {

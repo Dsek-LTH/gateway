@@ -2,16 +2,17 @@ import "source-map-support/register";
 
 import { Gateway } from "./Gateway";
 
+import { HttpService } from "./services/HttpService";
 import { ZmqService } from "./services/ZmqService";
 
 import { HttpConsumer } from "./consumers/HttpConsumer";
 import { ZmqConsumer } from "./consumers/ZmqConsumer";
 
 const gateway = new Gateway();
-
 gateway.registerService("login", new ZmqService(1338));
 gateway.registerService("profile", new ZmqService(1339));
 gateway.registerService("message", new ZmqService(1340));
-
+gateway.registerService("roles", new HttpService("http://localhost:8080/roles"));
+gateway.registerService("roleInstances", new HttpService("http://localhost:8080/roleInstances"));
 gateway.registerConsumer("zmq", new ZmqConsumer("tcp://*:6000"));
-gateway.registerConsumer("http", new HttpConsumer(8080));
+gateway.registerConsumer("http", new HttpConsumer(8083));

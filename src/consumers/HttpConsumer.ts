@@ -1,7 +1,8 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as expressGraphQL from "express-graphql";
-import { buildSchema, ExecutionResult, graphql, GraphQLSchema, Source } from "graphql";
+import { buildClientSchema, ExecutionResult, graphql, GraphQLSchema, introspectionQuery,
+    IntrospectionQuery, printSchema, Source } from "graphql";
 import { introspectSchema, makeRemoteExecutableSchema, mergeSchemas } from "graphql-tools";
 import * as uuid from "uuid";
 
@@ -25,14 +26,15 @@ export class HttpConsumer implements IConsumer {
       type: "*/*",
     })).post("/:service", this.request.bind(this));
 
-    // this.server.post("/", this.query.bind(this));
     this.server.listen(port, () => console.log(`http consumer listening on port ${port}`));
 
     setTimeout(async () => {
-      this.server.use("/", expressGraphQL({
+        this.schema = await this.stitchSchema(["roles", "roleInstances"]);
+        this.server.use("/", expressGraphQL({
         graphiql: true,
-        schema: await this.stitchSchema(["profile", "message", "login"]),
+        schema: this.schema,
       }));
+        console.log("schema", printSchema(this.schema));
     }, 1000);
   }
 
@@ -51,7 +53,7 @@ export class HttpConsumer implements IConsumer {
 
   private createFetcher(service: string): (operation: any) => Promise<ExecutionResult> {
     return async (operation: { query: string, variables: any }) => {
-      console.log("variables", operation);
+      console.log("operation", operation);
       const op = {
         query: operation.query,
         variables: operation.variables,
@@ -63,9 +65,10 @@ export class HttpConsumer implements IConsumer {
   private async getSchema(service: string): Promise<GraphQLSchema> {
     try {
       const fetcher = this.createFetcher(service);
+      const introspectResult = await fetcher({query: introspectionQuery});
       const schema = makeRemoteExecutableSchema({
         fetcher,
-        schema: await introspectSchema(fetcher),
+        schema: buildClientSchema(introspectResult.data as IntrospectionQuery),
       });
       return schema;
     } catch (e) {
@@ -75,14 +78,14 @@ export class HttpConsumer implements IConsumer {
 
   private async stitchSchema(services: string[]): Promise<GraphQLSchema> {
     const schemas: any[] = (await Promise.all(services.map((s) => this.getSchema(s)))).filter((x) => x != null);
-    schemas.push(`
+      /*schemas.push(`
       extend type Message {
         author: User
       }
-    `);
+    `);*/
 
     return mergeSchemas({
-      resolvers: (mergeInfo) => ({
+        /*resolvers: (mergeInfo) => ({
         Message: {
           author: {
             fragment: `fragment MessageFragment on Message { authorId }`,
@@ -99,7 +102,7 @@ export class HttpConsumer implements IConsumer {
             },
           },
         },
-      }),
+      }),*/
       schemas,
     });
   }
