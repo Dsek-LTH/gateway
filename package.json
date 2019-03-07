@@ -25,15 +25,20 @@
     "source-map-support": "^0.5.10",
     "tslint": "^5.9.1",
     "tslint-config-prettier": "^1.6.0",
-    "typescript": "^2.6.2"
+    "typescript": "^3.3.3333"
   },
   "dependencies": {
+    "@types/cors": "^2.8.4",
     "@types/request-promise-native": "^1.0.15",
+    "apollo-link-context": "^1.0.15",
+    "apollo-link-http": "1.2.0",
     "body-parser": "^1.18.2",
+    "cors": "^2.8.5",
     "express": "^4.16.2",
     "express-graphql": "^0.6.12",
     "graphql": "^0.13.1",
-    "graphql-tools": "^2.21.0",
+    "graphql-tools": "^4.0.0",
+    "node-fetch": "^2.3.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7",
     "uuid": "^3.2.1",

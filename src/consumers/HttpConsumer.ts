@@ -1,4 +1,5 @@
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 import * as express from "express";
 import * as expressGraphQL from "express-graphql";
 import { buildClientSchema, ExecutionResult, graphql, GraphQLSchema, introspectionQuery,
@@ -22,6 +23,7 @@ export class HttpConsumer implements IConsumer {
 
   constructor(port: number) {
     this.server = express();
+    this.server.use(cors());
     this.server.use("/:service", bodyParser.raw({
       type: "*/*",
     })).post("/:service", this.request.bind(this));
@@ -76,6 +78,16 @@ export class HttpConsumer implements IConsumer {
     }
   }
 
+        /*private getGraphQLClient(service: string): GraphQLClient {
+        const fetcher = this.createFetcher(service);
+        return {
+            execute: (query: DocumentNode, variables?: { [name: string]: any },
+            context?: any, introspect?: boolean): Promise<ClientExecutionResult> => {
+                return fetcher({query, variables});
+            }
+        }
+    }*/
+
   private async stitchSchema(services: string[]): Promise<GraphQLSchema> {
     const schemas: any[] = (await Promise.all(services.map((s) => this.getSchema(s)))).filter((x) => x != null);
       /*schemas.push(`
@@ -83,7 +95,9 @@ export class HttpConsumer implements IConsumer {
         author: User
       }
     `);*/
-
+      /*const clients = services.map(service => ({namespace: service, schema: this.getGraphQLClient(service)}));
+      return weaveSchemas({endpoints: clients});
+       */
     return mergeSchemas({
         /*resolvers: (mergeInfo) => ({
         Message: {
