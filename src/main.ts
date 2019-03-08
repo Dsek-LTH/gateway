@@ -6,7 +6,7 @@ import * as express from "express";
 import * as expressGraphQL from "express-graphql";
 import { buildClientSchema, ExecutionResult, graphql, GraphQLSchema, introspectionQuery,
     IntrospectionQuery, printSchema, Source } from "graphql";
-import { Gateway, IStitch } from "./merge";
+import { Gateway, IStitch } from "./Gateway";
 import { HttpService } from "./services/HttpService";
 
 const main = async () => {
