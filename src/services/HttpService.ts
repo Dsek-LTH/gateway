@@ -37,7 +37,8 @@ export class HttpService implements IService , IGraphQLService {
         const http = createHttpLink({ uri: this.url.href, fetch: fetch as unknown as GlobalFetch["fetch"] });
 
         const link = setContext((request, previousContext) => {
-            const authHeader = previousContext.grqphaContext && previousContext.graphqlContext.authKey ? {"Authorization": `Bearer ${previousContext.graphqlContext.authKey}`} : {};
+            const authHeader = previousContext.grqphaContext && previousContext.graphqlContext.authKey ?
+                {Authorization: `Bearer ${previousContext.graphqlContext.authKey}`} : {};
             return {
               headers: {
                 ...authHeader,

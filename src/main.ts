@@ -18,45 +18,45 @@ const main = async () => {
     gateway.addService(roleInstances);
 
     const roleStitch: IStitch = {
-        wrapper: roleInstances,
         provider: roles,
-        wrapperType: "RoleInstance",
-        wrappedField: "roleObject",
-        wrappedType: "Role!",
         providerMethod: {
             args: {
-                "uid": "role",
+                uid: "role",
             },
             name: "getRole",
         },
+        wrappedField: "roleObject",
+        wrappedType: "Role!",
+        wrapper: roleInstances,
+        wrapperType: "RoleInstance",
     };
     gateway.addStitch(roleStitch);
 
     const roleInstanceStitch: IStitch = {
-        wrapper: roles,
         provider: roleInstances,
-        wrapperType: "Role",
-        wrappedField: "allWorkers",
-        wrappedType: "[RoleInstance!]!",
         providerMethod: {
             args: {
-                "role": "uid",
+                role: "uid",
             },
             name: "allUsers",
         },
+        wrappedField: "allWorkers",
+        wrappedType: "[RoleInstance!]!",
+        wrapper: roles,
+        wrapperType: "Role",
     };
     const roleInstanceStitch2: IStitch = {
-        wrapper: roles,
         provider: roleInstances,
-        wrapperType: "Role",
-        wrappedField: "currentWorkers",
-        wrappedType: "[RoleInstance!]!",
         providerMethod: {
             args: {
-                "role": "uid",
+                role: "uid",
             },
             name: "currentUsers",
         },
+        wrappedField: "currentWorkers",
+        wrappedType: "[RoleInstance!]!",
+        wrapper: roles,
+        wrapperType: "Role",
     };
     gateway.addStitch(roleInstanceStitch);
     gateway.addStitch(roleInstanceStitch2);
