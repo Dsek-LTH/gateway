@@ -37,14 +37,15 @@ export class HttpService implements IService , IGraphQLService {
         const http = createHttpLink({ uri: this.url.href, fetch: fetch as unknown as GlobalFetch["fetch"] });
 
         const link = setContext((request, previousContext) => {
-            console.log("previousContext", previousContext);
+            const authHeader = previousContext.grqphaContext && previousContext.graphqlContext.authKey ? {"Authorization": `Bearer ${previousContext.graphqlContext.authKey}`} : {};
             return {
               headers: {
- // 'Authorization': `Bearer ${previousContext.graphqlContext && previousContext.graphqlContext.authKey}`,
+                ...authHeader,
                 "content-type": "application/json",
                 "host": this.url.host,
                     },
-            }; }).concat(http);
+            };
+        }).concat(http);
 
         const schema = await introspectSchema(link);
 
