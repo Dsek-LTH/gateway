@@ -1,5 +1,6 @@
 import { setContext } from "apollo-link-context";
 import { createHttpLink } from "apollo-link-http";
+import { RetryLink } from "apollo-link-retry";
 import { GraphQLSchema } from "graphql";
 import { introspectSchema, makeRemoteExecutableSchema } from "graphql-tools";
 import * as fetch from "node-fetch";
@@ -28,7 +29,9 @@ export class HttpService implements IGraphQLService {
                 "host": this.url.host,
                     },
             };
-        }).concat(http);
+        })
+        .concat(new RetryLink())
+        .concat(http);
 
         const schema = await introspectSchema(link);
 
