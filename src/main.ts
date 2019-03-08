@@ -10,8 +10,8 @@ import { Gateway, IStitch } from "./Gateway";
 import { HttpService } from "./services/HttpService";
 
 const main = async () => {
-    const roles = new HttpService("http://localhost:8080/roles");
-    const roleInstances = new HttpService("http://localhost:8080/roleInstances");
+    const roles = new HttpService("http://phunkis-service:8080/roles");
+    const roleInstances = new HttpService("http://phunkis-service:8080/roleInstances");
     const port = 8083;
     const gateway = new Gateway();
     gateway.addService(roles);
