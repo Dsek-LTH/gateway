@@ -1,7 +1,7 @@
 version: '3'
 services:
   phunkis-service:
-    image: phunkis-service:0.1
+    image: dsek/phunkis-service:latest
     ports:
       - "8080:8080"
     depends_on:
@@ -25,4 +25,11 @@ services:
       - "8083:8083"
     depends_on:
       - phunkis-service
+      - login
     restart: unless-stopped
+    build:
+      context: .
+  login:
+    image: dsek/login-service:latest
+    ports:
+      - "1338"
