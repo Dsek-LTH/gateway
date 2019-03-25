@@ -33,6 +33,7 @@
     "@types/request-promise-native": "^1.0.15",
     "apollo-link-context": "^1.0.15",
     "apollo-link-http": "1.2.0",
+    "apollo-link-retry": "^2.2.11",
     "body-parser": "^1.18.2",
     "cors": "^2.8.5",
     "express": "^4.16.2",

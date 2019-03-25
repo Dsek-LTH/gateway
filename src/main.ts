@@ -10,12 +10,15 @@ import { Gateway, IStitch } from "./Gateway";
 import { HttpService } from "./services/HttpService";
 
 const main = async () => {
-    const roles = new HttpService("http://localhost:8080/roles");
-    const roleInstances = new HttpService("http://localhost:8080/roleInstances");
+    console.log("gateway starting up");
+    const roles = new HttpService("http://phunkis-service:8080/roles");
+    const roleInstances = new HttpService("http://phunkis-service:8080/roleInstances");
+    const login = new HttpService("http://login:1338/graphql");
     const port = 8083;
     const gateway = new Gateway();
     gateway.addService(roles);
     gateway.addService(roleInstances);
+    gateway.addService(login);
 
     const roleStitch: IStitch = {
         provider: roles,
