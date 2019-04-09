@@ -45,17 +45,20 @@ export class Gateway implements IGraphQLService {
         console.log(JSON.stringify(links, null, 2));
         const typeDefs = links.map(({typeDef}: {typeDef: string}) => typeDef);
         const resolvers = this.mergeResolvers(links.map(({resolver}: {resolver: IResolver<TContext>}) => resolver));
+        console.log("resolvers", resolvers);
         return this.merge(this.services, typeDefs, resolvers);
     }
 
     private async merge(services: IGraphQLService[], extensions: string[], resolvers: any): Promise<GraphQLSchema> {
     const schemas: GraphQLSchema[] = await Promise.all(services.map((s) => s.fetchSchema()));
+    console.log("schemas", schemas);
     return mergeSchemas({resolvers, schemas: [...schemas, ...extensions]});
 }
     private async createLink<TContext>(stitch: IStitch): Promise<{typeDef: string, resolver: IResolver<TContext>}> {
     const schema = await stitch.provider.fetchSchema();
     const argValues: string[] = _.values(stitch.providerMethod.args);
     const resolve: IFieldResolver<IDict, TContext> = (wrapperNode, args, context, info) => {
+        console.log("context", context);
         return info.mergeInfo.delegateToSchema<TContext>({
             args: _.mapValues(stitch.providerMethod.args, (value: string) => wrapperNode[value]),
             context,

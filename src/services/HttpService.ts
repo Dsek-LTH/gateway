@@ -6,6 +6,7 @@ import { introspectSchema, makeRemoteExecutableSchema } from "graphql-tools";
 import * as fetch from "node-fetch";
 import { URL } from "url";
 import { IGraphQLService } from "../Gateway";
+import headerForwardLink from "../HeaderForwardLink";
 
 export class HttpService implements IGraphQLService {
 
@@ -18,6 +19,8 @@ export class HttpService implements IGraphQLService {
     public async fetchSchema(): Promise<GraphQLSchema> {
 
         const http = createHttpLink({ uri: this.url.href, fetch: fetch as unknown as GlobalFetch["fetch"] });
+        const retryLink = new RetryLink();
+        const baseLink = retryLink.concat(http);
 
         const link = setContext((request, previousContext) => {
             const authHeader = previousContext.graphqlContext && previousContext.graphqlContext.authKey ?
@@ -30,10 +33,12 @@ export class HttpService implements IGraphQLService {
                     },
             };
         })
-        .concat(new RetryLink())
-        .concat(http);
+        .concat(headerForwardLink)
+        .concat(baseLink);
 
-        const schema = await introspectSchema(link);
+        // graphqlContext is only available through makeRemoteSchema,
+        // so don't use links using graphqlContext with introspectSchema
+        const schema = await introspectSchema(baseLink);
 
         const executableSchema = makeRemoteExecutableSchema({
                       link,
@@ -42,5 +47,4 @@ export class HttpService implements IGraphQLService {
 
         return executableSchema;
     }
-
 }
