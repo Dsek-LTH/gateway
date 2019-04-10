@@ -5,15 +5,20 @@ import { GraphQLSchema } from "graphql";
 import { introspectSchema, makeRemoteExecutableSchema } from "graphql-tools";
 import * as fetch from "node-fetch";
 import { URL } from "url";
+import { authLink } from "../auth";
 import { IGraphQLService } from "../Gateway";
 import headerForwardLink from "../HeaderForwardLink";
 
 export class HttpService implements IGraphQLService {
 
     private url: URL;
+    private permissionWhitelist: string[] | null;
 
-    constructor(uri: string) {
+    // if permissions is set, the whole service is inaccessible to everyone
+    // except logged in users with one of the permissions listed
+    constructor(uri: string, permissions: string[] | null = null) {
         this.url = new URL(uri);
+        this.permissionWhitelist = permissions;
     }
 
     public async fetchSchema(): Promise<GraphQLSchema> {
@@ -22,21 +27,19 @@ export class HttpService implements IGraphQLService {
         const retryLink = new RetryLink();
         const baseLink = retryLink.concat(http);
 
-        const link = setContext((request, previousContext) => {
-            const authHeader = previousContext.graphqlContext && previousContext.graphqlContext.authKey ?
-                {Authorization: `Bearer ${previousContext.graphqlContext.authKey}`} : {};
-            return {
-              headers: {
-                ...authHeader,
-                "content-type": "application/json",
-                "host": this.url.host,
-                    },
-            };
-        })
+        const link = setContext((request, previousContext) => ({
+            ...previousContext,
+            headers: {
+                ...previousContext.headers,
+                host: this.url.host, // for services returning invalid host header
+            },
+        }))
+        .concat(authLink(this.permissionWhitelist))
         .concat(headerForwardLink)
         .concat(baseLink);
 
-        // graphqlContext is only available through makeRemoteSchema,
+        // graphqlContext is made available through makeRemoteExecutableSchema,
+        // and plain graphql(), but not introspectSchema,
         // so don't use links using graphqlContext with introspectSchema
         const schema = await introspectSchema(baseLink);
 

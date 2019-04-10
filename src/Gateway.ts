@@ -23,6 +23,7 @@ export interface IResolver<TContext> {
         };
     }
 export interface IDict {[key: string]: any; }
+
 export class Gateway implements IGraphQLService {
     private services: IGraphQLService[];
     private stitches: IStitch[];
