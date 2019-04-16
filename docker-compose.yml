@@ -29,6 +29,10 @@ services:
     restart: unless-stopped
     build:
       context: .
+    environment:
+      - LOGIN_URL=http://login:1338/graphql
+      - ROLE_URL=http://phunkis-service:8080/roles
+      - ROLE_INSTANCE_URL=http://phunkis-service:8080/roleInstances
   login:
     image: dsek/login-service:latest
     ports:

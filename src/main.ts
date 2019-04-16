@@ -3,6 +3,7 @@ import "source-map-support/register";
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
+import * as dotenv from "dotenv";
 import * as express from "express";
 import * as expressGraphQL from "express-graphql";
 import { buildClientSchema, DocumentNode, ExecutionResult, graphql, GraphQLResolveInfo,
@@ -10,6 +11,8 @@ import { buildClientSchema, DocumentNode, ExecutionResult, graphql, GraphQLResol
 import { getUser } from "./auth";
 import { Gateway, IStitch } from "./Gateway";
 import { HttpService } from "./services/HttpService";
+
+dotenv.config();
 
 interface IContext {
     req: express.Request;
@@ -30,13 +33,13 @@ const getPublicKey = async (loginSchema: GraphQLSchema, context: IContext): Prom
 
 const main = async () => {
     console.log("gateway starting up");
-    const login = new HttpService("http://localhost:1338/graphql");
+    const login = new HttpService(process.env.LOGIN_URL);
     const port = 8083;
     const gateway = new Gateway();
     gateway.addService(login);
 
-    const roles = new HttpService("http://phunkis-service:8080/roles");
-    const roleInstances = new HttpService("http://phunkis-service:8080/roleInstances");
+    const roles = new HttpService(process.env.ROLE_URL);
+    const roleInstances = new HttpService(process.env.ROLE_INSTANCE_URL);
     gateway.addService(roles);
     gateway.addService(roleInstances);
 

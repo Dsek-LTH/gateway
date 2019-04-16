@@ -23,6 +23,8 @@ export class HttpService implements IGraphQLService {
 
     public async fetchSchema(): Promise<GraphQLSchema> {
 
+        console.log(`fetching schema from ${this.url.href}`);
+
         const http = createHttpLink({ uri: this.url.href, fetch: fetch as unknown as GlobalFetch["fetch"] });
         const retryLink = new RetryLink();
         const baseLink = retryLink.concat(http);
