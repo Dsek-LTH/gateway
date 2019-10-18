@@ -15,6 +15,7 @@ interface IJWT {
 
 // validate token throws if expired
 export const getUser = (req: Request, publicKey: string) => {
+    if (!req.cookies.auth) { return null; }
     const authHeader = JSON.parse(req.cookies.auth);
     if (!authHeader) { return null; }
     const token = validateToken(authHeader, publicKey) as IJWT;
