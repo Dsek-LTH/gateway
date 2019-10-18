@@ -40,8 +40,10 @@ const main = async () => {
 
     const roles = new HttpService(process.env.ROLE_URL);
     const roleInstances = new HttpService(process.env.ROLE_INSTANCE_URL);
+    const hoarder = new HttpService(process.env.HOARDER_URL);
     gateway.addService(roles);
     gateway.addService(roleInstances);
+    gateway.addService(hoarder);
 
     const roleStitch: IStitch = {
         provider: roles,
