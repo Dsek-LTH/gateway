@@ -98,7 +98,14 @@ const main = async () => {
     server.use(cors());
     server.use("/", async (req, res) => {
         const key = await getPublicKey(loginSchema, { req, res });
-        const user = getUser(req, key);
+        let user;
+        try {
+            user = getUser(req, key);
+        } catch (error) {
+        res.setHeader("Content-Type", "application/json");
+        res.clearCookie("auth");
+        res.end(`{"errors": [{"message": "Your session has expired"}], "data": null}`);
+        }
         return expressGraphQL({
             context: {req, res, user},
             graphiql: true,

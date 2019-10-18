@@ -2,7 +2,7 @@ import { setContext } from "apollo-link-context";
 import { createHttpLink } from "apollo-link-http";
 import { RetryLink } from "apollo-link-retry";
 import { GraphQLSchema } from "graphql";
-import { introspectSchema, makeRemoteExecutableSchema } from "graphql-tools";
+import { introspectSchema, makeRemoteExecutableSchema } from "graphql-tools-fork";
 import * as fetch from "node-fetch";
 import { URL } from "url";
 import { authLink } from "../auth";
