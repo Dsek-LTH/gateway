@@ -1,5 +1,5 @@
 import {GraphQLFieldResolver, GraphQLResolveInfo, GraphQLSchema} from "graphql";
-import {IFieldResolver, IResolverObject, IResolvers, MergeInfo, mergeSchemas} from "graphql-tools";
+import {IFieldResolver, IResolverObject, IResolvers, MergeInfo, mergeSchemas} from "graphql-tools-fork";
 import * as _ from "lodash";
 export interface IGraphQLService {
     fetchSchema: () => Promise<GraphQLSchema>;
